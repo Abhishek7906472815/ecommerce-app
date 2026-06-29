@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ShopNow - E-commerce App</title>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f4f4f2;color:#1a1a18;min-height:100vh}
+.navbar{background:#fff;border-bottom:0.5px solid #e0ddd5;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
+.nav-brand{font-size:18px;font-weight:600;color:#1a1a18;cursor:pointer;letter-spacing:-0.3px}
+.nav-brand span{color:#d85a30}
+.nav-actions{display:flex;align-items:center;gap:12px}
+.cart-btn{background:none;border:0.5px solid #c8c5bc;border-radius:8px;padding:6px 14px;cursor:pointer;font-size:14px;color:#1a1a18;display:flex;align-items:center;gap:6px;transition:background 0.15s}
+.cart-btn:hover{background:#f9f9f7}
+.cart-badge{background:#d85a30;color:#fff;border-radius:99px;font-size:11px;font-weight:600;padding:1px 6px;min-width:18px;text-align:center}
+.container{max-width:1200px;margin:0 auto;padding:24px 16px}
+.page-header{margin-bottom:24px}
+.page-title{font-size:22px;font-weight:600;color:#1a1a18}
+.page-sub{font-size:14px;color:#6b6b66;margin-top:4px}
+.search-bar{width:100%;max-width:400px;padding:8px 14px;border:0.5px solid #e0ddd5;border-radius:8px;font-size:14px;background:#fff;color:#1a1a18;outline:none;transition:border-color 0.15s;margin-bottom:20px}
+.search-bar:focus{border-color:#378add}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.product-card{background:#fff;border:0.5px solid #e0ddd5;border-radius:12px;overflow:hidden;cursor:pointer;transition:border-color 0.15s,transform 0.15s;display:flex;flex-direction:column}
+.product-card:hover{border-color:#c8c5bc;transform:translateY(-2px)}
+.product-img{width:100%;aspect-ratio:1;object-fit:contain;background:#f9f9f7;padding:16px}
+.product-info{padding:12px;flex:1;display:flex;flex-direction:column;gap:6px}
+.product-cat{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;color:#9b9b95}
+.product-title{font-size:14px;font-weight:500;color:#1a1a18;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.product-meta{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px}
+.product-price{font-size:16px;font-weight:600;color:#1a1a18}
+.product-rating{font-size:12px;color:#6b6b66;display:flex;align-items:center;gap:3px}
+.star{color:#ef9f27}
+.add-cart-btn{margin:0 12px 12px;padding:8px;background:#1a1a18;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:background 0.15s}
+.add-cart-btn:hover{background:#333}
+.back-btn{background:none;border:0.5px solid #e0ddd5;border-radius:8px;padding:6px 14px;cursor:pointer;font-size:14px;color:#6b6b66;display:flex;align-items:center;gap:6px;margin-bottom:24px;width:fit-content}
+.back-btn:hover{background:#f9f9f7}
+.detail-layout{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+@media(max-width:640px){.detail-layout{grid-template-columns:1fr}}
+.detail-img-wrap{background:#fff;border:0.5px solid #e0ddd5;border-radius:12px;padding:32px;display:flex;align-items:center;justify-content:center;aspect-ratio:1}
+.detail-img{width:100%;max-height:360px;object-fit:contain}
+.detail-cat{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;color:#9b9b95;margin-bottom:8px}
+.detail-title{font-size:22px;font-weight:600;line-height:1.3;margin-bottom:12px}
+.detail-rating{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.stars{color:#ef9f27;font-size:16px}
+.rating-count{font-size:13px;color:#6b6b66}
+.detail-price{font-size:28px;font-weight:700;margin-bottom:8px}
+.detail-discount{display:inline-block;background:#faece7;color:#993c1d;font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;margin-bottom:16px}
+.detail-desc{font-size:14px;line-height:1.7;color:#6b6b66;margin-bottom:20px}
+.detail-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.tag{background:#f9f9f7;border:0.5px solid #e0ddd5;border-radius:99px;font-size:12px;padding:4px 10px;color:#6b6b66}
+.detail-stock{font-size:13px;margin-bottom:20px}
+.in-stock{color:#3b6d11}
+.low-stock{color:#854f0b}
+.qty-row{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.qty-btn{width:32px;height:32px;border:0.5px solid #c8c5bc;border-radius:8px;background:none;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;color:#1a1a18}
+.qty-num{font-size:16px;font-weight:500;min-width:24px;text-align:center}
+.add-detail-btn{width:100%;padding:12px;background:#1a1a18;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer}
+.add-detail-btn:hover{background:#333}
+.specs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:20px;padding-top:20px;border-top:0.5px solid #e0ddd5}
+.spec-item{font-size:13px}
+.spec-label{color:#9b9b95;margin-bottom:2px}
+.spec-val{font-weight:500;color:#1a1a18}
+.cart-layout{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}
+@media(max-width:768px){.cart-layout{grid-template-columns:1fr}}
+.cart-items{display:flex;flex-direction:column;gap:12px}
+.cart-item{background:#fff;border:0.5px solid #e0ddd5;border-radius:12px;padding:16px;display:flex;gap:16px;align-items:flex-start}
+.cart-item-img{width:80px;height:80px;object-fit:contain;background:#f9f9f7;border-radius:8px;padding:8px;flex-shrink:0}
+.cart-item-info{flex:1}
+.cart-item-title{font-size:14px;font-weight:500;line-height:1.4;margin-bottom:4px;cursor:pointer;color:#1a1a18}
+.cart-item-title:hover{color:#185fa5}
+.cart-item-cat{font-size:12px;color:#9b9b95;margin-bottom:8px}
+.cart-item-price{font-size:15px;font-weight:600}
+.cart-item-actions{display:flex;align-items:center;gap:8px;margin-top:8px}
+.qty-sm-btn{width:28px;height:28px;border:0.5px solid #c8c5bc;border-radius:6px;background:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:#1a1a18}
+.qty-sm{font-size:14px;font-weight:500;min-width:20px;text-align:center}
+.remove-btn{margin-left:auto;background:none;border:none;color:#9b9b95;cursor:pointer;font-size:13px;padding:4px;border-radius:6px}
+.remove-btn:hover{color:#a32d2d;background:#fcebeb}
+.bill-card{background:#fff;border:0.5px solid #e0ddd5;border-radius:12px;padding:20px;position:sticky;top:76px}
+.bill-title{font-size:16px;font-weight:600;margin-bottom:16px;padding-bottom:12px;border-bottom:0.5px solid #e0ddd5}
+.bill-row{display:flex;justify-content:space-between;align-items:center;font-size:14px;padding:6px 0}
+.bill-row.muted{color:#6b6b66}
+.bill-row.discount{color:#3b6d11}
+.bill-row.total{font-weight:600;font-size:16px;padding-top:12px;margin-top:8px;border-top:0.5px solid #e0ddd5}
+.checkout-btn{width:100%;margin-top:16px;padding:12px;background:#1a1a18;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer}
+.checkout-btn:hover{background:#333}
+.empty-cart{text-align:center;padding:60px 24px;background:#fff;border:0.5px solid #e0ddd5;border-radius:12px}
+.empty-icon{font-size:48px;margin-bottom:16px;opacity:0.4}
+.empty-title{font-size:18px;font-weight:500;margin-bottom:8px}
+.empty-sub{font-size:14px;color:#6b6b66;margin-bottom:20px}
+.shop-btn{padding:10px 24px;background:#1a1a18;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer}
+.loading{text-align:center;padding:80px;color:#6b6b66}
+.spinner{width:32px;height:32px;border:3px solid #e0ddd5;border-top-color:#1a1a18;border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.filter-btn{padding:5px 12px;border:0.5px solid #c8c5bc;border-radius:99px;background:none;font-size:13px;cursor:pointer;color:#6b6b66;transition:all 0.15s}
+.filter-btn.active{background:#1a1a18;color:#fff;border-color:#1a1a18}
+.toast{position:fixed;bottom:24px;right:24px;background:#1a1a18;color:#fff;padding:10px 20px;border-radius:8px;font-size:14px;z-index:999;animation:slideIn 0.2s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.items-count{font-size:13px;color:#6b6b66;margin-bottom:16px}
+.savings-badge{background:#eaf3de;color:#3b6d11;font-size:12px;font-weight:500;padding:8px 12px;border-radius:8px;margin-top:12px;text-align:center}
+.thumbnails{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.thumb{width:64px;height:64px;object-fit:contain;background:#fff;border-radius:8px;padding:6px;cursor:pointer;border:0.5px solid #e0ddd5}
+.thumb.active{border:2px solid #1a1a18}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const {useState,useEffect,useMemo}=React;
+
+function App(){
+  const [page,setPage]=useState('listing');
+  const [products,setProducts]=useState([]);
+  const [loading,setLoading]=useState(true);
+  const [selectedProduct,setSelectedProduct]=useState(null);
+  const [cart,setCart]=useState([]);
+  const [toast,setToast]=useState(null);
+  const [search,setSearch]=useState('');
+  const [category,setCategory]=useState('all');
+
+  useEffect(()=>{
+    fetch('https://dummyjson.com/products?limit=194')
+      .then(r=>r.json())
+      .then(d=>{setProducts(d.products);setLoading(false)})
+      .catch(()=>setLoading(false));
+  },[]);
+
+  const showToast=(msg)=>{
+    setToast(msg);
+    setTimeout(()=>setToast(null),2200);
+  };
+
+  const addToCart=(product,qty=1)=>{
+    setCart(prev=>{
+      const ex=prev.find(i=>i.id===product.id);
+      if(ex) return prev.map(i=>i.id===product.id?{...i,qty:i.qty+qty}:i);
+      return [...prev,{...product,qty}];
+    });
+    showToast(product.title.slice(0,25)+'... added to cart');
+  };
+
+  const removeFromCart=(id)=>setCart(prev=>prev.filter(i=>i.id!==id));
+  const updateQty=(id,delta)=>setCart(prev=>prev.map(i=>i.id===id?{...i,qty:Math.max(1,i.qty+delta)}:i));
+  const cartCount=cart.reduce((s,i)=>s+i.qty,0);
+
+  const categories=useMemo(()=>{
+    const cats=[...new Set(products.map(p=>p.category))].sort();
+    return ['all',...cats];
+  },[products]);
+
+  const filtered=useMemo(()=>products.filter(p=>{
+    const ms=p.title.toLowerCase().includes(search.toLowerCase())||p.brand?.toLowerCase().includes(search.toLowerCase());
+    const mc=category==='all'||p.category===category;
+    return ms&&mc;
+  }),[products,search,category]);
+
+  const goToProduct=(p)=>{setSelectedProduct(p);setPage('detail');window.scrollTo(0,0)};
+  const goToListing=()=>{setPage('listing');window.scrollTo(0,0)};
+  const goToCart=()=>{setPage('cart');window.scrollTo(0,0)};
+
+  return React.createElement('div',null,
+    React.createElement(Navbar,{cartCount,onBrandClick:goToListing,onCartClick:goToCart}),
+    page==='listing'&&React.createElement(ListingPage,{products:filtered,loading,search,setSearch,categories,category,setCategory,onProductClick:goToProduct,onAddToCart:addToCart}),
+    page==='detail'&&React.createElement(DetailPage,{product:selectedProduct,onBack:goToListing,onAddToCart:addToCart}),
+    page==='cart'&&React.createElement(CartPage,{cart,onRemove:removeFromCart,onUpdateQty:updateQty,onShopClick:goToListing,onProductClick:goToProduct}),
+    toast&&React.createElement('div',{className:'toast'},toast)
+  );
+}
+
+function Navbar({cartCount,onBrandClick,onCartClick}){
+  return React.createElement('nav',{className:'navbar'},
+    React.createElement('div',{className:'nav-brand',onClick:onBrandClick},'Shop',React.createElement('span',null,'Now')),
+    React.createElement('div',{className:'nav-actions'},
+      React.createElement('button',{className:'cart-btn',onClick:onCartClick},
+        '🛒 Cart',cartCount>0&&React.createElement('span',{className:'cart-badge'},cartCount)
+      )
+    )
+  );
+}
+
+function ListingPage({products,loading,search,setSearch,categories,category,setCategory,onProductClick,onAddToCart}){
+  if(loading) return React.createElement('div',{className:'loading'},React.createElement('div',{className:'spinner'}),'Loading products...');
+  return React.createElement('div',{className:'container'},
+    React.createElement('div',{className:'page-header'},
+      React.createElement('h1',{className:'page-title'},'All Products'),
+      React.createElement('p',{className:'page-sub'},'Browse our curated collection')
+    ),
+    React.createElement('input',{className:'search-bar',type:'text',placeholder:'Search products or brands...',value:search,onChange:e=>setSearch(e.target.value)}),
+    React.createElement('div',{className:'filter-row'},
+      categories.map(c=>React.createElement('button',{key:c,className:'filter-btn'+(category===c?' active':''),onClick:()=>setCategory(c)},c==='all'?'All':c.replace(/-/g,' ')))
+    ),
+    React.createElement('p',{className:'items-count'},filtered.length+' products found'),
+    products.length===0
+      ?React.createElement('div',{style:{textAlign:'center',padding:'60px',color:'#6b6b66'}},'No products match your search.')
+      :React.createElement('div',{className:'products-grid'},
+          products.map(p=>React.createElement(ProductCard,{key:p.id,product:p,onClick:()=>onProductClick(p),onAddToCart:()=>onAddToCart(p)}))
+        )
+  );
+}
+
+function ProductCard({product,onClick,onAddToCart}){
+  return React.createElement('div',{className:'product-card',onClick},
+    React.createElement('img',{className:'product-img',src:product.thumbnail,alt:product.title,loading:'lazy'}),
+    React.createElement('div',{className:'product-info'},
+      React.createElement('div',{className:'product-cat'},product.category),
+      React.createElement('div',{className:'product-title'},product.title),
+      React.createElement('div',{className:'product-meta'},
+        React.createElement('div',{className:'product-price'},'$'+product.price.toFixed(2)),
+        React.createElement('div',{className:'product-rating'},React.createElement('span',{className:'star'},'★'),product.rating.toFixed(1))
+      )
+    ),
+    React.createElement('button',{className:'add-cart-btn',onClick:e=>{e.stopPropagation();onAddToCart()}},'+ Add to cart')
+  );
+}
+
+function DetailPage({product,onBack,onAddToCart}){
+  const [qty,setQty]=useState(1);
+  const [activeImg,setActiveImg]=useState(product?.thumbnail);
+  if(!product) return null;
+  const stockStatus=product.stock>20?'in-stock':product.stock>0?'low-stock':'out-stock';
+  return React.createElement('div',{className:'container'},
+    React.createElement('button',{className:'back-btn',onClick:onBack},'← Back to products'),
+    React.createElement('div',{className:'detail-layout'},
+      React.createElement('div',null,
+        React.createElement('div',{className:'detail-img-wrap'},React.createElement('img',{className:'detail-img',src:activeImg,alt:product.title})),
+        product.images&&product.images.length>1&&React.createElement('div',{className:'thumbnails'},
+          product.images.slice(0,5).map((img,i)=>React.createElement('img',{key:i,src:img,alt:'',className:'thumb'+(activeImg===img?' active':''),onClick:()=>setActiveImg(img)}))
+        )
+      ),
+      React.createElement('div',null,
+        React.createElement('div',{className:'detail-cat'},product.category),
+        React.createElement('h1',{className:'detail-title'},product.title),
+        React.createElement('div',{className:'detail-rating'},
+          React.createElement('span',{className:'stars'},'★'.repeat(Math.round(product.rating))),
+          React.createElement('span',{className:'rating-count'},product.rating.toFixed(1)+' · '+(product.reviews?.length||0)+' reviews')
+        ),
+        React.createElement('div',{className:'detail-price'},'$'+product.price.toFixed(2)),
+        product.discountPercentage&&React.createElement('div',{className:'detail-discount'},product.discountPercentage.toFixed(0)+'% off'),
+        React.createElement('p',{className:'detail-desc'},product.description),
+        product.tags&&React.createElement('div',{className:'detail-tags'},product.tags.map((t,i)=>React.createElement('span',{key:i,className:'tag'},t))),
+        React.createElement('div',{className:'detail-stock '+stockStatus},product.stock>20?'✓ In stock ('+product.stock+')':'Only '+product.stock+' left'),
+        React.createElement('div',{className:'qty-row'},
+          React.createElement('span',{style:{fontSize:'14px',color:'#6b6b66'}},'Quantity'),
+          React.createElement('button',{className:'qty-btn',onClick:()=>setQty(q=>Math.max(1,q-1))},'-'),
+          React.createElement('span',{className:'qty-num'},qty),
+          React.createElement('button',{className:'qty-btn',onClick:()=>setQty(q=>q+1)},'+')
+        ),
+        React.createElement('button',{className:'add-detail-btn',onClick:()=>onAddToCart(product,qty)},'Add '+qty+' to cart · $'+(product.price*qty).toFixed(2)),
+        React.createElement('div',{className:'specs-grid'},
+          product.brand&&React.createElement('div',{className:'spec-item'},React.createElement('div',{className:'spec-label'},'Brand'),React.createElement('div',{className:'spec-val'},product.brand)),
+          product.sku&&React.createElement('div',{className:'spec-item'},React.createElement('div',{className:'spec-label'},'SKU'),React.createElement('div',{className:'spec-val'},product.sku)),
+          product.weight&&React.createElement('div',{className:'spec-item'},React.createElement('div',{className:'spec-label'},'Weight'),React.createElement('div',{className:'spec-val'},product.weight+'g')),
+          product.warrantyInformation&&React.createElement('div',{className:'spec-item'},React.createElement('div',{className:'spec-label'},'Warranty'),React.createElement('div',{className:'spec-val'},product.warrantyInformation)),
+          product.shippingInformation&&React.createElement('div',{className:'spec-item'},React.createElement('div',{className:'spec-label'},'Shipping'),React.createElement('div',{className:'spec-val'},product.shippingInformation)),
+          product.returnPolicy&&React.createElement('div',{className:'spec-item'},React.createElement('div',{className:'spec-label'},'Returns'),React.createElement('div',{className:'spec-val'},product.returnPolicy))
+        )
+      )
+    )
+  );
+}
+
+function CartPage({cart,onRemove,onUpdateQty,onShopClick,onProductClick}){
+  const subtotal=cart.reduce((s,i)=>s+(i.price*i.qty),0);
+  const totalDiscount=cart.reduce((s,i)=>s+((i.price*(i.discountPercentage||0)/100)*i.qty),0);
+  const shipping=subtotal>50?0:9.99;
+  const tax=subtotal*0.08;
+  const total=subtotal-totalDiscount+shipping+tax;
+  const itemCount=cart.reduce((s,i)=>s+i.qty,0);
+
+  if(cart.length===0) return React.createElement('div',{className:'container'},
+    React.createElement('div',{className:'empty-cart'},
+      React.createElement('div',{className:'empty-icon'},'🛒'),
+      React.createElement('h2',{className:'empty-title'},'Your cart is empty'),
+      React.createElement('p',{className:'empty-sub'},'Add some products to get started'),
+      React.createElement('button',{className:'shop-btn',onClick:onShopClick},'Start shopping')
+    )
+  );
+
+  return React.createElement('div',{className:'container'},
+    React.createElement('div',{className:'page-header'},
+      React.createElement('h1',{className:'page-title'},'Your cart'),
+      React.createElement('p',{className:'page-sub'},itemCount+' item'+(itemCount!==1?'s':''))
+    ),
+    React.createElement('div',{className:'cart-layout'},
+      React.createElement('div',{className:'cart-items'},
+        cart.map(item=>React.createElement('div',{key:item.id,className:'cart-item'},
+          React.createElement('img',{className:'cart-item-img',src:item.thumbnail,alt:item.title}),
+          React.createElement('div',{className:'cart-item-info'},
+            React.createElement('div',{className:'cart-item-title',onClick:()=>onProductClick(item)},item.title),
+            React.createElement('div',{className:'cart-item-cat'},item.category+(item.brand?' · '+item.brand:'')),
+            React.createElement('div',{className:'cart-item-price'},'$'+(item.price*item.qty).toFixed(2)),
+            React.createElement('div',{className:'cart-item-actions'},
+              React.createElement('button',{className:'qty-sm-btn',onClick:()=>onUpdateQty(item.id,-1)},'-'),
+              React.createElement('span',{className:'qty-sm'},item.qty),
+              React.createElement('button',{className:'qty-sm-btn',onClick:()=>onUpdateQty(item.id,1)},'+'),
+              React.createElement('button',{className:'remove-btn',onClick:()=>onRemove(item.id)},'Remove')
+            )
+          )
+        ))
+      ),
+      React.createElement('div',{className:'bill-card'},
+        React.createElement('div',{className:'bill-title'},'Bill summary'),
+        React.createElement('div',{className:'bill-row muted'},React.createElement('span',null,'Subtotal ('+itemCount+' items)'),React.createElement('span',null,'$'+subtotal.toFixed(2))),
+        totalDiscount>0&&React.createElement('div',{className:'bill-row discount'},React.createElement('span',null,'Discount'),React.createElement('span',null,'-$'+totalDiscount.toFixed(2))),
+        React.createElement('div',{className:'bill-row muted'},React.createElement('span',null,'Shipping'),React.createElement('span',null,shipping===0?'Free':'$'+shipping.toFixed(2))),
+        React.createElement('div',{className:'bill-row muted'},React.createElement('span',null,'Tax (8%)'),React.createElement('span',null,'$'+tax.toFixed(2))),
+        React.createElement('div',{className:'bill-row total'},React.createElement('span',null,'Total'),React.createElement('span',null,'$'+total.toFixed(2))),
+        shipping===0&&React.createElement('div',{className:'savings-badge'},'🎉 Free shipping on orders over $50!'),
+        totalDiscount>0&&React.createElement('div',{className:'savings-badge',style:{marginTop:'8px'}},'💸 You saved $'+totalDiscount.toFixed(2)+' with discounts!'),
+        React.createElement('button',{className:'checkout-btn'},'Proceed to checkout')
+      )
+    )
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+</script>
+</body>
+</html>
